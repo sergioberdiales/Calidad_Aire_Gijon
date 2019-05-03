@@ -1,5 +1,27 @@
 # Visualizaciones
 
+Cargamos paquetes
+```{r , warning= FALSE, message= FALSE}
+library(tidyverse)
+library(bookdown)
+library(rmarkdown)
+library(readr)
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(lubridate)
+library(ggplot2)
+library(stringr)
+library(knitr)
+#library(xts)
+#library(zoo)
+#library(gridExtra)
+#library(fpp2)
+#library(RcppRoll)
+#library(kableExtra)
+options(knitr.table.format = "html")
+```
+
 Cargamos los datos
 ```{r , warning= FALSE, message= FALSE}
 air_data_2 <- readRDS("data_rds/air_data_2.rds")
@@ -9,3 +31,4 @@ Echamos un vistazo a las variables
 ```{r , warning= FALSE, message= FALSE}
 glimpse(air_data_2)
 ```
+

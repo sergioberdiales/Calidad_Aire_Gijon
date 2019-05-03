@@ -4,32 +4,6 @@ Los datos utilizados los he obtenido de la página web de trasparencia del ayunt
 
 En este proyecto parto directamente de este archivo de datos: "air_data_2.rds".
 
-Loading packages
-```{r , warning= FALSE, message= FALSE}
-library(bookdown)
-library(rmarkdown)
-library(readr)
-library(dplyr)
-library(tidyr)
-library(purrr)
-library(lubridate)
-library(ggplot2)
-library(stringr)
-library(knitr)
-library(xts)
-library(zoo)
-library(gridExtra)
-library(fpp2)
-library(RcppRoll)
-library(kableExtra)
-options(knitr.table.format = "html")
-```
-
-Cargamos los datos
-```{r , warning= FALSE, message= FALSE}
-readRDS("data_rds/air_data_2.rds")
-```
-
 
 
 
