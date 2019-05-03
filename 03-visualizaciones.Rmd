@@ -1,0 +1,11 @@
+# Visualizaciones
+
+Cargamos los datos
+```{r , warning= FALSE, message= FALSE}
+air_data_2 <- readRDS("data_rds/air_data_2.rds")
+```
+Echamos un vistazo a las variables
+
+```{r , warning= FALSE, message= FALSE}
+glimpse(air_data_2)
+```
