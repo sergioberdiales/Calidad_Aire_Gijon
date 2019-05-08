@@ -32,3 +32,55 @@ Echamos un vistazo a las variables
 glimpse(air_data_2)
 ```
 
+Obtenemos las medias anuales de todos los contaminantes por estación y las plasmamos en un gráfico para observar sus evoluciones
+```{r , warning= FALSE, message= FALSE}
+# Calculamos las medias anuales
+year_avgs <- air_data_2 %>% select(station_alias, date_time_utc, PM10, PM25, SO2, NO2, NO, O3, BEN, CO, MXIL, TOL) %>%
+  group_by(station_alias, year = year(date_time_utc)) %>%
+  summarise_all(funs(mean(., na.rm = TRUE))) %>% 
+  select(-date_time_utc) # We drop this variable
+
+
+# Convertimos los resultados a formato largo
+
+year_avgs_long <- gather(year_avgs, contaminante, value, 3:length(year_avgs)) %>% 
+                    filter(!(grepl('Constit', station_alias) 
+                             & year == '2006' & 
+                               contaminante %in% c('BEN', 'MXIL', 'TOL'))) %>%
+                                # We filter this data because is only completed in 0.01%
+                    filter(!(grepl('Constit', station_alias) &
+                              year == '2008' & contaminante == 'PM25'))
+                                # We filter this data because is only completed in 0.02%
+
+# Finalmente representamos los indicadores generados en una tabla de gráficos
+
+ggplot(year_avgs_long, aes(x = year, y = value)) + 
+  geom_line() + 
+  facet_grid(contaminante~station_alias,scales="free_y") +
+   theme(axis.text = element_text(size = 6))
+```
+
+Nos quedamos sólo con el contaminante PM10
+```{r , warning= FALSE, message= FALSE}
+
+year_avgs_long_pm10 <- year_avgs_long %>% filter(contaminante == "PM10",
+                                                 station_alias != "Montevil")
+
+ggplot(year_avgs_long_pm10, aes(x = year, y = value)) + 
+  geom_line() + 
+  facet_grid(contaminante~station_alias,scales="free_y") +
+   theme(axis.text = element_text(size = 6)) + ylim(0, 100)
+
+```
+
+
+```{r , warning= FALSE, message= FALSE}
+
+
+ggplot(year_avgs_long_pm10, aes(x = year, y = value, group = station_alias, color = station_alias)) + 
+  geom_line()  +
+  ylim(0, 100)
+
+
+```
+

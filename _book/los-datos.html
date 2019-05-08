@@ -125,7 +125,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introducción</a></li>
 <li class="chapter" data-level="2" data-path="los-datos.html"><a href="los-datos.html"><i class="fa fa-check"></i><b>2</b> Los datos</a></li>
 <li class="chapter" data-level="3" data-path="visualizaciones.html"><a href="visualizaciones.html"><i class="fa fa-check"></i><b>3</b> Visualizaciones</a></li>
 </ul>
@@ -147,8 +147,71 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="los-datos" class="section level1">
 <h1><span class="header-section-number">2</span> Los datos</h1>
-<p>Los datos utilizados los he obtenido de la página web de trasparencia del ayuntamiento de Gijón. El tratamiento de los datos aplicado a los datos originales está descrito en detalle aquíhttps://bookdown.org/sergioberdiales/tfm-kschool_gijon_air_pollution/the-data.html y aquí <a href="https://bookdown.org/sergioberdiales/tfm-kschool_gijon_air_pollution/gathering-and-cleaning-data.html" class="uri">https://bookdown.org/sergioberdiales/tfm-kschool_gijon_air_pollution/gathering-and-cleaning-data.html</a></p>
-<p>En este proyecto parto directamente de este archivo de datos: “air_data_2.rds”.</p>
+<p>Los datos utilizados los he obtenido de la página web de trasparencia del ayuntamiento de Gijón <a href="https://transparencia.gijon.es/" class="uri">https://transparencia.gijon.es/</a>. The data can be downloaded from <a href="https://transparencia.gijon.es/search/risp_dataset/page/1808-catalogo-de-datos?utf8=%E2%9C%93&amp;search=aire+&amp;search_sector=&amp;search_format=&amp;commit=Buscar&amp;authenticity_token=j8%2F3CvCuPcDkrRe%2F1NR5RBp0t%2FOOosiA7724w3T2mB4%3D">here</a>:</p>
+<p>I downloaded 19 csv files with air pollution and weather data of Gijón from years 2000 to 2018. I saved them in the “data” project folder.
+I downloaded two more files from this web, a csv file with the description of the variables and another csv file with information about the measurement stations.</p>
+<p>All the data files are in the Github repository project, except the final dataset in csv format, because the Github file size limits (but there is a rds version of this file in the project folder “data_rds”).</p>
+<div class="figure">
+<img src="imgs/gijon_stations_map.jpg" alt="Image source: “Informe de calidad del aire del Principado de Asturias (2016)”." />
+<p class="caption">Image source: “Informe de calidad del aire del Principado de Asturias (2016)”.</p>
+</div>
+<p>These are the original fields from the 18 csv files downloaded:</p>
+<ul>
+<li><strong>Estación</strong>: Station id.</li>
+<li><strong>Título</strong>: Station name.</li>
+<li><strong>latitud</strong>: Latitude.</li>
+<li><strong>longitud</strong>: Longitude.</li>
+<li><strong>date_time_utc</strong>: Date Time UTC.</li>
+<li><strong>date_time_utc</strong>: Date Time UTC.</li>
+<li><strong>SO2</strong>: SO2 concentration (µg/m³).</li>
+<li><strong>NO</strong>: NO concentration (µg/m³).</li>
+<li><strong>NO2</strong>: NO2 concentration (µg/m³).</li>
+<li><strong>CO</strong>: NO2 concentration (mg/m³).</li>
+<li><strong>PM10</strong>: Particulate Matter (&lt;10 µg/m³).</li>
+<li><strong>O3</strong>: Ozone concentration (µg/m³).</li>
+<li><strong>dd</strong>: Wind direction (degrees).</li>
+<li><strong>vv</strong>: Wind speed (m/s).</li>
+<li><strong>TMP</strong>: Dry temperature (ºC).</li>
+<li><strong>HR</strong>: Relative humidity (%rh).</li>
+<li><strong>PRB</strong>: Atmospheric pressure (mb).</li>
+<li><strong>RS</strong>: Solar radiation (W/m²).</li>
+<li><strong>LL</strong>: Rainfall (l/m²).</li>
+<li><strong>BEN</strong>: Benzene concentration (µg/m³).</li>
+<li><strong>TOL</strong>: Toluene concentration (µg/m³).</li>
+<li><strong>MXIL</strong>: M-Xylene (µg/m³).</li>
+<li><p><strong>PM25</strong>: Particulate Matter (&lt;2.5 µg/m³).</p>
+<p>And these are the fields of the final file ‘air_data_2.csv’ (or ‘air_data_2.rds’):</p></li>
+<li><strong>station</strong>: Station id.</li>
+<li><strong>station_name</strong>: Station name.</li>
+<li><strong>latitude</strong>: Latitude.</li>
+<li><strong>longitude</strong>: Longitude.</li>
+<li><strong>date_time_utc</strong>: Date Time UTC.</li>
+<li><strong>SO2</strong>: SO2 concentration (µg/m³).</li>
+<li><strong>NO</strong>: NO concentration (µg/m³).</li>
+<li><strong>NO2</strong>: NO2 concentration (µg/m³).</li>
+<li><strong>CO</strong>: NO2 concentration (mg/m³).</li>
+<li><strong>PM10</strong>: Particulate Matter (&lt;10 µg/m³).</li>
+<li><strong>O3</strong>: Ozone concentration (µg/m³).</li>
+<li><strong>dd</strong>: Wind direction (degrees).</li>
+<li><strong>vv</strong>: Wind speed (m/s).</li>
+<li><strong>TMP</strong>: Dry temperature (ºC).</li>
+<li><strong>HR</strong>: Relative humidity (%rh).</li>
+<li><strong>PRB</strong>: Atmospheric pressure (mb).</li>
+<li><strong>RS</strong>: Solar radiation (W/m²).</li>
+<li><strong>LL</strong>: Rainfall (l/m²).</li>
+<li><strong>BEN</strong>: Benzene concentration (µg/m³).</li>
+<li><strong>TOL</strong>: Toluene concentration (µg/m³).</li>
+<li><strong>MXIL</strong>: M-Xylene (µg/m³).</li>
+<li><strong>PM25</strong>: Particulate Matter (&lt;2.5 µg/m³).</li>
+<li><strong>station_alias</strong>: Station alias (new variable).</li>
+<li><strong>year</strong>: Year (new variable).</li>
+<li><strong>month</strong>: Month (new variable).</li>
+<li><strong>week_day</strong>: Week day (new variable).</li>
+<li><strong>hour</strong>: Hour of the day (new variable).</li>
+<li><strong>date</strong>: Date YYYY-MM-DD (new variable).</li>
+<li><strong>lab</strong>: lab = working day / no_lab = no working day.</li>
+<li><p><strong>wd</strong>: Wind direction in factor format.</p></li>
+</ul>
 
 </div>
             </section>

@@ -125,7 +125,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introducción</a></li>
 <li class="chapter" data-level="2" data-path="los-datos.html"><a href="los-datos.html"><i class="fa fa-check"></i><b>2</b> Los datos</a></li>
 <li class="chapter" data-level="3" data-path="visualizaciones.html"><a href="visualizaciones.html"><i class="fa fa-check"></i><b>3</b> Visualizaciones</a></li>
 </ul>
@@ -203,6 +203,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## $ holiday_type  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ...
 ## $ no_lab_days   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ...
 ## $ wd_code       &lt;fct&gt; WS, SW, SW, WS, WS, SW, WS, WS, WS, SW, SW, SW, ...</code></pre>
+<p>Obtenemos las medias anuales de todos los contaminantes por estación y las plasmamos en un gráfico para observar sus evoluciones</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calculamos las medias anuales</span>
+year_avgs &lt;-<span class="st"> </span>air_data_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(station_alias, date_time_utc, PM10, PM25, SO2, NO2, NO, O3, BEN, CO, MXIL, TOL) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(station_alias, <span class="dt">year =</span> <span class="kw">year</span>(date_time_utc)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise_all</span>(<span class="kw">funs</span>(<span class="kw">mean</span>(., <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>date_time_utc) <span class="co"># We drop this variable</span>
+
+
+<span class="co"># Convertimos los resultados a formato largo</span>
+
+year_avgs_long &lt;-<span class="st"> </span><span class="kw">gather</span>(year_avgs, contaminante, value, <span class="dv">3</span><span class="op">:</span><span class="kw">length</span>(year_avgs)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">                    </span><span class="kw">filter</span>(<span class="op">!</span>(<span class="kw">grepl</span>(<span class="st">&#39;Constit&#39;</span>, station_alias) 
+                             <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> &#39;2006&#39;</span> <span class="op">&amp;</span><span class="st"> </span>
+<span class="st">                               </span>contaminante <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;BEN&#39;</span>, <span class="st">&#39;MXIL&#39;</span>, <span class="st">&#39;TOL&#39;</span>))) <span class="op">%&gt;%</span>
+<span class="st">                                </span><span class="co"># We filter this data because is only completed in 0.01%</span>
+<span class="st">                    </span><span class="kw">filter</span>(<span class="op">!</span>(<span class="kw">grepl</span>(<span class="st">&#39;Constit&#39;</span>, station_alias) <span class="op">&amp;</span>
+<span class="st">                              </span>year <span class="op">==</span><span class="st"> &#39;2008&#39;</span> <span class="op">&amp;</span><span class="st"> </span>contaminante <span class="op">==</span><span class="st"> &#39;PM25&#39;</span>))
+                                <span class="co"># We filter this data because is only completed in 0.02%</span>
+
+<span class="co"># Finalmente representamos los indicadores generados en una tabla de gráficos</span>
+
+<span class="kw">ggplot</span>(year_avgs_long, <span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> value)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">facet_grid</span>(contaminante<span class="op">~</span>station_alias,<span class="dt">scales=</span><span class="st">&quot;free_y&quot;</span>) <span class="op">+</span>
+<span class="st">   </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">6</span>))</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Nos quedamos sólo con el contaminante PM10</p>
+<pre class="sourceCode r"><code class="sourceCode r">year_avgs_long_pm10 &lt;-<span class="st"> </span>year_avgs_long <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(contaminante <span class="op">==</span><span class="st"> &quot;PM10&quot;</span>,
+                                                 station_alias <span class="op">!=</span><span class="st"> &quot;Montevil&quot;</span>)
+
+<span class="kw">ggplot</span>(year_avgs_long_pm10, <span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> value)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">facet_grid</span>(contaminante<span class="op">~</span>station_alias,<span class="dt">scales=</span><span class="st">&quot;free_y&quot;</span>) <span class="op">+</span>
+<span class="st">   </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">6</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ylim</span>(<span class="dv">0</span>, <span class="dv">100</span>)</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(year_avgs_long_pm10, <span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> value, <span class="dt">group =</span> station_alias, <span class="dt">color =</span> station_alias)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>()  <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylim</span>(<span class="dv">0</span>, <span class="dv">100</span>)</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 
 </div>
             </section>
