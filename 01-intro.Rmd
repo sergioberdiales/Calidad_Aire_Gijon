@@ -1,8 +1,0 @@
-# Introducción {#intro}
-
-Los objetivos principales de este proyecto son realizar análisis y visualizaciones de los datos de la estaciones oficiales de monitorización de la calidad del aire de la ciudad de Gijón.
-
-Este proyecto es hermano de este otro https://bookdown.org/sergioberdiales/tfm-kschool_gijon_air_pollution/, que fue mi trabajo final del Máster de Data Science en Kschool. En él, además de tratar los datos y realizar distintos ejercicios de visualización de los mismos ([ver visualizaciones en Tableau Public](https://public.tableau.com/profile/sergioberdiales#!/vizhome/ContaminacinaireGijn/PM10)), realicé diversos aproximaciones al problema de predicción (hasta 24 horas) de niveles de contaminación en la ciudad de Gijón (consultar [aquí](https://bookdown.org/sergioberdiales/tfm-kschool_gijon_air_pollution/forecasting-models.html)). Mi intención es continuar este proyecto de modelado de predicciones en un futuro próximo. Según vaya avanzando en ello iré incluyendo actualizaciones en este libro.
-
-Este es un trabajo en curso. Cualquier sugerencia o aportación para mejorarlo será muy bienvenida. 
-
