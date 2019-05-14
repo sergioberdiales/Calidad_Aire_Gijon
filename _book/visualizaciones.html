@@ -47,6 +47,7 @@
 
 
 
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
 
 
 <style type="text/css">
@@ -126,7 +127,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <ul class="summary">
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introducción</a></li>
-<li class="chapter" data-level="2" data-path="los-datos.html"><a href="los-datos.html"><i class="fa fa-check"></i><b>2</b> Los datos</a></li>
+<li class="chapter" data-level="2" data-path="los-datos.html"><a href="los-datos.html"><i class="fa fa-check"></i><b>2</b> Los datos</a><ul>
+<li class="chapter" data-level="2.1" data-path="los-datos.html"><a href="los-datos.html#data-cleaning"><i class="fa fa-check"></i><b>2.1</b> Data cleaning</a></li>
+<li class="chapter" data-level="2.2" data-path="los-datos.html"><a href="los-datos.html#adding-new-variables"><i class="fa fa-check"></i><b>2.2</b> Adding new variables</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="los-datos.html"><a href="los-datos.html#time-variables"><i class="fa fa-check"></i><b>2.2.1</b> Time variables</a></li>
+<li class="chapter" data-level="2.2.2" data-path="los-datos.html"><a href="los-datos.html#laboral-dates"><i class="fa fa-check"></i><b>2.2.2</b> Laboral dates</a></li>
+<li class="chapter" data-level="2.2.3" data-path="los-datos.html"><a href="los-datos.html#wind-direction"><i class="fa fa-check"></i><b>2.2.3</b> Wind direction</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="3" data-path="visualizaciones.html"><a href="visualizaciones.html"><i class="fa fa-check"></i><b>3</b> Visualizaciones</a></li>
 </ul>
 
@@ -170,7 +178,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre class="sourceCode r"><code class="sourceCode r">air_data_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;data_rds/air_data_2.rds&quot;</span>)</code></pre>
 <p>Echamos un vistazo a las variables</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">glimpse</span>(air_data_<span class="dv">2</span>)</code></pre>
-<pre><code>## Observations: 722,768
+<pre><code>## Observations: 775,328
 ## Variables: 31
 ## $ station       &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
 ## $ station_name  &lt;fct&gt; Estación Avenida Constitución, Estación Avenida ...
@@ -228,7 +236,7 @@ year_avgs_long &lt;-<span class="st"> </span><span class="kw">gather</span>(year
 <span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">facet_grid</span>(contaminante<span class="op">~</span>station_alias,<span class="dt">scales=</span><span class="st">&quot;free_y&quot;</span>) <span class="op">+</span>
 <span class="st">   </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">6</span>))</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-38-1.png" width="\textwidth" /></p>
 <p>Nos quedamos sólo con el contaminante PM10</p>
 <pre class="sourceCode r"><code class="sourceCode r">year_avgs_long_pm10 &lt;-<span class="st"> </span>year_avgs_long <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(contaminante <span class="op">==</span><span class="st"> &quot;PM10&quot;</span>,
                                                  station_alias <span class="op">!=</span><span class="st"> &quot;Montevil&quot;</span>)
@@ -237,11 +245,11 @@ year_avgs_long &lt;-<span class="st"> </span><span class="kw">gather</span>(year
 <span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">facet_grid</span>(contaminante<span class="op">~</span>station_alias,<span class="dt">scales=</span><span class="st">&quot;free_y&quot;</span>) <span class="op">+</span>
 <span class="st">   </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">6</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ylim</span>(<span class="dv">0</span>, <span class="dv">100</span>)</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-39-1.png" width="\textwidth" /></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(year_avgs_long_pm10, <span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> value, <span class="dt">group =</span> station_alias, <span class="dt">color =</span> station_alias)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_line</span>()  <span class="op">+</span>
 <span class="st">  </span><span class="kw">ylim</span>(<span class="dv">0</span>, <span class="dv">100</span>)</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-40-1.png" width="\textwidth" /></p>
 
 </div>
             </section>
