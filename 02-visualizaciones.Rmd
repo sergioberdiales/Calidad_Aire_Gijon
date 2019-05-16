@@ -71,6 +71,12 @@ ggplot(year_avgs_long_pm10, aes(x = year, y = value)) +
 
 ```
 
+```{r , warning= FALSE, message= FALSE, out.width= '\\textwidth'}
+
+tabla_pm10 <- year_avgs %>% select(station_alias, year, PM10)
+                          
+
+```
 
 ```{r , warning= FALSE, message= FALSE, out.width= '\\textwidth'}
 
