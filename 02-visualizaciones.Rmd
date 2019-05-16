@@ -3,19 +3,16 @@
 Cargamos paquetes
 ```{r , warning= FALSE, message= FALSE}
 library(tidyverse)
+library(gganimate)
 library(bookdown)
 library(rmarkdown)
-library(readr)
-library(dplyr)
-library(tidyr)
 library(purrr)
 library(lubridate)
-library(ggplot2)
 library(stringr)
 library(knitr)
 #library(xts)
 #library(zoo)
-#library(gridExtra)
+library(gridExtra)
 #library(fpp2)
 #library(RcppRoll)
 #library(kableExtra)
@@ -84,3 +81,104 @@ ggplot(year_avgs_long_pm10, aes(x = year, y = value, group = station_alias, colo
 
 ```
 
+La estación Argentina es la que presenta peores valores de PM10 a lo largo del tiempo. Echamos un vistazo a su evolución a través de la función 'summary'. Para ello vamos a comparar dos histogramas, uno con las frecuencias promedio horarios de PM10 de los primeros 5 años de la serie y otro con las correspondientes a los últimos 5 años.
+
+```{r , warning= FALSE, message= FALSE, out.width= '\\textwidth'}
+
+pm10_argentina_2000_2004 <- air_data_2 %>% 
+                           select(date, 
+                                   station_alias,
+                                    PM10) %>%
+                           filter(year(date) < "2005",
+                                  station_alias == "Argentina")
+
+pm10_argentina_2014_2018 <- air_data_2 %>% 
+                           select(date, 
+                                   station_alias,
+                                    PM10) %>%
+                           filter(year(date) > "2013",
+                                  station_alias == "Argentina")
+
+
+summary(pm10_argentina_2000_2004$PM10)
+summary(pm10_argentina_2014_2018$PM10)
+
+```
+Como vemos en los resultados, la evolución ha sido muy importante. Durante el periodo 2000-2004 el 75% de los promedios horarios se situaban por encima de 39  µg/m³. Mientras, en los últimos 5 años, el 75% de los promedios están por debajo de 35 µg/m³.
+
+Vamos a comparar los histogramas de frecuencias de promedios horarios de PM10 en la estación Argentina en dos periodos, los primeros 5 años de la serie 2000-2004 contra los 5 últimos años. 
+```{r , warning= FALSE, message= FALSE, out.width= '\\textwidth'}
+
+
+graph_1 <- ggplot(pm10_argentina_2000_2004, aes(x = `PM10`)) +
+                    geom_histogram() + 
+                           xlim(0, 300) +
+                           labs(title = "Distribución promedios horarios PM10 estación Argentina - (2000-2004)")
+
+
+graph_2 <- ggplot(pm10_argentina_2014_2018, aes(x = `PM10`)) +
+                    geom_histogram() + 
+                           xlim(0, 300) +
+                          labs(title = "Distribución promedios horarios PM10 estación Argentina - (2014-2018)")
+
+grid.arrange(graph_1, 
+             graph_2, 
+             ncol = 1) 
+```
+```{r , warning= FALSE, message= FALSE, out.width= '\\textwidth'}
+
+pm10_argentina <- air_data_2 %>% 
+                           select(date_time_utc, 
+                                  station_alias,
+                                  PM10) %>%
+                           filter(station_alias == "Argentina",
+                                  PM10 != "NA")
+
+pm10_argentina_ranges <- pm10_argentina %>% 
+                         mutate(rangos = if_else(PM10 <= 20, "<=20 µg/m³", 
+                                         if_else(PM10 > 20 & PM10 <= 40, "(20-40] µg/m³", ">40 µg/m³")))
+
+pm10_argentina_ranges$rangos <- factor(pm10_argentina_ranges$rangos, levels = c("<=20 µg/m³", "(20-40] µg/m³", ">40 µg/m³"))
+ 
+pm10_argentina_ranges_conteo <- pm10_argentina_ranges %>%
+                                group_by(year = year(date_time_utc), rangos) %>%
+                                summarise(n = n()) %>%
+                                ungroup() %>%
+                                group_by(year) %>%
+                                mutate(n_total_year = sum(n),
+                                       prop_year = n / n_total_year)
+
+graph_3 <- ggplot(pm10_argentina_ranges_conteo, aes(x = rangos, y = prop_year, fill = rangos)) +
+                  geom_col() +
+                  facet_grid(. ~year) +
+                  scale_color_manual(values = c("<=20 µg/m³" = "green", "(20-40] µg/m³" = "orange", ">40 µg/m³" = "red"),
+                                     aesthetics = c("colour", "fill"))
+
+
+```
+
+```{r , warning= FALSE, message= FALSE, out.width= '\\textwidth'}
+graph_4  <- ggplot(pm10_argentina_ranges_conteo, aes(x = rangos, y = prop_year, fill = rangos, label = rangos)) +
+                  geom_col(show.legend = FALSE) +
+                  geom_text(vjust=0.5, size = 5)+
+                  scale_color_manual(values = c("<=20 µg/m³" = "green", "(20-40] µg/m³" = "orange", ">40 µg/m³" = "red"),
+                                     aesthetics = c("colour", "fill")) +
+                  ggtitle("Evolución niveles PM10 - Estación Argentina (Gijón)") +
+                  ylab("Porcentaje rangos de niveles de PM10") +
+                  xlab("Rangos de niveles de PM10") +
+                  theme(axis.text=element_text(size=12),
+                  axis.title=element_text(size=12,face="bold"),
+                  plot.title=element_text(size = 16, face="bold"),
+                  axis.text.x=element_blank())
+
+graph_4
+```
+
+```{r , warning= FALSE, message= FALSE, out.width= '\\textwidth'}
+pm10_Argentina_2000_2018_anim <- graph_4 + transition_time(as.integer(year)) +
+  labs(title = "Año: {frame_time}")
+
+pm10_Argentina_2000_2018_anim
+
+anim_save("pm10_Argentina_2000_2018.gif", pm10_Argentina_2000_2018_anim)
+```
