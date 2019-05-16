@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html >
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>3 Visualizaciones | Calidad del aire en Gijón</title>
-  <meta name="description" content="3 Visualizaciones | Calidad del aire en Gijón">
-  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+  <meta name="description" content="3 Visualizaciones | Calidad del aire en Gijón" />
+  <meta name="generator" content="bookdown 0.10 and GitBook 2.6.7" />
 
   <meta property="og:title" content="3 Visualizaciones | Calidad del aire en Gijón" />
   <meta property="og:type" content="book" />
@@ -22,13 +21,13 @@
   
   
 
-<meta name="author" content="Sergio Berdiales">
+<meta name="author" content="Sergio Berdiales" />
 
 
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
 <link rel="prev" href="los-datos.html">
@@ -157,19 +156,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">3</span> Visualizaciones</h1>
 <p>Cargamos paquetes</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(gganimate)
+<span class="kw">library</span>(gifski)
 <span class="kw">library</span>(bookdown)
 <span class="kw">library</span>(rmarkdown)
-<span class="kw">library</span>(readr)
-<span class="kw">library</span>(dplyr)
-<span class="kw">library</span>(tidyr)
 <span class="kw">library</span>(purrr)
 <span class="kw">library</span>(lubridate)
-<span class="kw">library</span>(ggplot2)
 <span class="kw">library</span>(stringr)
 <span class="kw">library</span>(knitr)
 <span class="co">#library(xts)</span>
 <span class="co">#library(zoo)</span>
-<span class="co">#library(gridExtra)</span>
+<span class="kw">library</span>(gridExtra)
 <span class="co">#library(fpp2)</span>
 <span class="co">#library(RcppRoll)</span>
 <span class="co">#library(kableExtra)</span>
@@ -250,6 +247,100 @@ year_avgs_long &lt;-<span class="st"> </span><span class="kw">gather</span>(year
 <span class="st">  </span><span class="kw">geom_line</span>()  <span class="op">+</span>
 <span class="st">  </span><span class="kw">ylim</span>(<span class="dv">0</span>, <span class="dv">100</span>)</code></pre>
 <p><img src="_main_files/figure-html/unnamed-chunk-40-1.png" width="\textwidth" /></p>
+<p>La estación Argentina es la que presenta peores valores de PM10 a lo largo del tiempo. Echamos un vistazo a su evolución a través de la función ‘summary’. Para ello vamos a comparar dos histogramas, uno con las frecuencias promedio horarios de PM10 de los primeros 5 años de la serie y otro con las correspondientes a los últimos 5 años.</p>
+<pre class="sourceCode r"><code class="sourceCode r">pm10_argentina_<span class="dv">2000</span>_<span class="dv">2004</span> &lt;-<span class="st"> </span>air_data_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">                           </span><span class="kw">select</span>(date, 
+                                   station_alias,
+                                    PM10) <span class="op">%&gt;%</span>
+<span class="st">                           </span><span class="kw">filter</span>(<span class="kw">year</span>(date) <span class="op">&lt;</span><span class="st"> &quot;2005&quot;</span>,
+                                  station_alias <span class="op">==</span><span class="st"> &quot;Argentina&quot;</span>)
+
+pm10_argentina_<span class="dv">2014</span>_<span class="dv">2018</span> &lt;-<span class="st"> </span>air_data_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">                           </span><span class="kw">select</span>(date, 
+                                   station_alias,
+                                    PM10) <span class="op">%&gt;%</span>
+<span class="st">                           </span><span class="kw">filter</span>(<span class="kw">year</span>(date) <span class="op">&gt;</span><span class="st"> &quot;2013&quot;</span>,
+                                  station_alias <span class="op">==</span><span class="st"> &quot;Argentina&quot;</span>)
+
+
+<span class="kw">summary</span>(pm10_argentina_<span class="dv">2000</span>_<span class="dv">2004</span><span class="op">$</span>PM10)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##    0.00   39.00   53.00   58.13   72.00  986.00     922</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(pm10_argentina_<span class="dv">2014</span>_<span class="dv">2018</span><span class="op">$</span>PM10)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##    0.00   16.00   24.00   28.84   35.00  522.00     330</code></pre>
+<p>Como vemos en los resultados, la evolución ha sido muy importante. Durante el periodo 2000-2004 el 75% de los promedios horarios se situaban por encima de 39 µg/m³. Mientras, en los últimos 5 años, el 75% de los promedios están por debajo de 35 µg/m³.</p>
+<p>Vamos a comparar los histogramas de frecuencias de promedios horarios de PM10 en la estación Argentina en dos periodos, los primeros 5 años de la serie 2000-2004 contra los 5 últimos años.</p>
+<pre class="sourceCode r"><code class="sourceCode r">graph_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">ggplot</span>(pm10_argentina_<span class="dv">2000</span>_<span class="dv">2004</span>, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">PM10</span><span class="st">`</span>)) <span class="op">+</span>
+<span class="st">                    </span><span class="kw">geom_histogram</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">                           </span><span class="kw">xlim</span>(<span class="dv">0</span>, <span class="dv">300</span>) <span class="op">+</span>
+<span class="st">                           </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Distribución promedios horarios PM10 estación Argentina - (2000-2004)&quot;</span>)
+
+
+graph_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">ggplot</span>(pm10_argentina_<span class="dv">2014</span>_<span class="dv">2018</span>, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="st">`</span><span class="dt">PM10</span><span class="st">`</span>)) <span class="op">+</span>
+<span class="st">                    </span><span class="kw">geom_histogram</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">                           </span><span class="kw">xlim</span>(<span class="dv">0</span>, <span class="dv">300</span>) <span class="op">+</span>
+<span class="st">                          </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Distribución promedios horarios PM10 estación Argentina - (2014-2018)&quot;</span>)
+
+<span class="kw">grid.arrange</span>(graph_<span class="dv">1</span>, 
+             graph_<span class="dv">2</span>, 
+             <span class="dt">ncol =</span> <span class="dv">1</span>) </code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-42-1.png" width="\textwidth" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">pm10_argentina &lt;-<span class="st"> </span>air_data_<span class="dv">2</span> <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">                           </span><span class="kw">select</span>(date_time_utc, 
+                                  station_alias,
+                                  PM10) <span class="op">%&gt;%</span>
+<span class="st">                           </span><span class="kw">filter</span>(station_alias <span class="op">==</span><span class="st"> &quot;Argentina&quot;</span>,
+                                  PM10 <span class="op">!=</span><span class="st"> &quot;NA&quot;</span>)
+
+pm10_argentina_ranges &lt;-<span class="st"> </span>pm10_argentina <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">                         </span><span class="kw">mutate</span>(<span class="dt">rangos =</span> <span class="kw">if_else</span>(PM10 <span class="op">&lt;=</span><span class="st"> </span><span class="dv">20</span>, <span class="st">&quot;&lt;=20 µg/m³&quot;, </span>
+<span class="st">                                         if_else(PM10 &gt; 20 &amp; PM10 &lt;= 40, &quot;</span>(<span class="dv">20-40</span>] µg<span class="op">/</span>m³&quot;, <span class="st">&quot;&gt;40 µg/m³&quot;)))</span>
+
+<span class="st">pm10_argentina_ranges$rangos &lt;- factor(pm10_argentina_ranges$rangos, levels = c(&quot;</span><span class="op">&lt;=</span><span class="dv">20</span> µg<span class="op">/</span>m³&quot;, <span class="st">&quot;(20-40] µg/m³&quot;, &quot;</span><span class="op">&gt;</span><span class="dv">40</span> µg<span class="op">/</span>m³&quot;))
+ 
+pm10_argentina_ranges_conteo &lt;-<span class="st"> </span>pm10_argentina_ranges <span class="op">%&gt;%</span>
+<span class="st">                                </span><span class="kw">group_by</span>(<span class="dt">year =</span> <span class="kw">year</span>(date_time_utc), rangos) <span class="op">%&gt;%</span>
+<span class="st">                                </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span>
+<span class="st">                                </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span>
+<span class="st">                                </span><span class="kw">group_by</span>(year) <span class="op">%&gt;%</span>
+<span class="st">                                </span><span class="kw">mutate</span>(<span class="dt">n_total_year =</span> <span class="kw">sum</span>(n),
+                                       <span class="dt">prop_year =</span> n <span class="op">/</span><span class="st"> </span>n_total_year)
+
+graph_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">ggplot</span>(pm10_argentina_ranges_conteo, <span class="kw">aes</span>(<span class="dt">x =</span> rangos, <span class="dt">y =</span> prop_year, <span class="dt">fill =</span> rangos)) <span class="op">+</span>
+<span class="st">                  </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">                  </span><span class="kw">facet_grid</span>(. <span class="op">~</span>year) <span class="op">+</span>
+<span class="st">                  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;&lt;=20 µg/m³&quot; = &quot;</span>green<span class="st">&quot;, &quot;</span>(<span class="dv">20-40</span>] µg<span class="op">/</span>m³&quot; =<span class="st"> &quot;orange&quot;</span>, <span class="st">&quot;&gt;40 µg/m³&quot; = &quot;</span>red<span class="st">&quot;),</span>
+<span class="st">                                     aesthetics = c(&quot;</span>colour<span class="st">&quot;, &quot;</span>fill<span class="st">&quot;))</span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">graph_<span class="dv">4</span>  &lt;-<span class="st"> </span><span class="kw">ggplot</span>(pm10_argentina_ranges_conteo, <span class="kw">aes</span>(<span class="dt">x =</span> rangos, <span class="dt">y =</span> prop_year, <span class="dt">fill =</span> rangos, <span class="dt">label =</span> rangos)) <span class="op">+</span>
+<span class="st">                  </span><span class="kw">geom_col</span>(<span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
+<span class="st">                  </span><span class="kw">geom_text</span>(<span class="dt">vjust=</span><span class="op">-</span><span class="fl">0.5</span>, <span class="dt">size =</span> <span class="dv">7</span>, <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;grey&quot;</span>)<span class="op">+</span>
+<span class="st">                  </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;&lt;=20 µg/m³&quot; = &quot;</span>green<span class="st">&quot;, &quot;</span>(<span class="dv">20-40</span>] µg<span class="op">/</span>m³&quot; =<span class="st"> &quot;orange&quot;</span>, <span class="st">&quot;&gt;40 µg/m³&quot; = &quot;</span>red<span class="st">&quot;),</span>
+<span class="st">                                     aesthetics = c(&quot;</span>colour<span class="st">&quot;, &quot;</span>fill<span class="st">&quot;)) +</span>
+<span class="st">                  ggtitle(&quot;</span>Evolución PM10 <span class="op">-</span><span class="st"> </span>Estación <span class="kw">Argentina</span> (Gijón)<span class="st">&quot;) +</span>
+<span class="st">                  ylab(&quot;</span>% rangos PM10 <span class="op">-</span><span class="st"> </span>Promedios horarios<span class="st">&quot;) +</span>
+<span class="st">                  xlab(&quot;</span>Rangos de niveles de PM10<span class="op">-</span>Promedios horarios<span class="st">&quot;) +</span>
+<span class="st">                  theme(axis.text=element_text(size=12),</span>
+<span class="st">                  axis.title=element_text(size=16,face=&quot;</span>bold<span class="st">&quot;, color = &quot;</span>grey<span class="st">&quot;),</span>
+<span class="st">                  plot.title=element_text(size = 20, face=&quot;</span>bold<span class="st">&quot;, color = &quot;</span>grey<span class="st">&quot;),</span>
+<span class="st">                  plot.subtitle = element_text(size = 40, face=&quot;</span>bold<span class="st">&quot;, color = &quot;</span>grey<span class="st">&quot;),</span>
+<span class="st">                  axis.text.x=element_blank(),</span>
+<span class="st">                  axis.ticks.x = element_blank(),</span>
+<span class="st">                  panel.grid.major = element_blank(),</span>
+<span class="st">                  panel.grid.minor = element_blank(),</span>
+<span class="st">                  panel.background = element_blank()) +</span>
+<span class="st">                  scale_y_continuous(labels = scales::percent)</span>
+
+<span class="st">graph_4</span></code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-44-1.png" width="\textwidth" /></p>
+<p>Los porcentajes en el eje Y sale mal, pero por lo que sea al animarlo aparece correctamente. Así que lo dejamos así.</p>
+<pre class="sourceCode r"><code class="sourceCode r">pm10_Argentina_<span class="dv">2000</span>_<span class="dv">2018</span>_anim &lt;-<span class="st"> </span>graph_<span class="dv">4</span> <span class="op">+</span><span class="st"> </span><span class="kw">transition_time</span>(<span class="kw">as.integer</span>(year)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Evolución PM10 estación Argentina (Gijón)&quot;</span>,
+        <span class="dt">subtitle =</span> <span class="st">&quot;Año: {frame_time}&quot;</span>)
+
+pm10_Argentina_<span class="dv">2000</span>_<span class="dv">2018</span>_anim</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-45-1.gif" width="\textwidth" /></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anim_save</span>(<span class="st">&quot;pm10_Argentina_2000_2018.gif&quot;</span>, pm10_Argentina_<span class="dv">2000</span>_<span class="dv">2018</span>_anim)</code></pre>
 
 </div>
             </section>

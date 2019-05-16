@@ -4,6 +4,7 @@ Cargamos paquetes
 ```{r , warning= FALSE, message= FALSE}
 library(tidyverse)
 library(gganimate)
+library(gifski)
 library(bookdown)
 library(rmarkdown)
 library(purrr)
@@ -160,25 +161,36 @@ graph_3 <- ggplot(pm10_argentina_ranges_conteo, aes(x = rangos, y = prop_year, f
 ```{r , warning= FALSE, message= FALSE, out.width= '\\textwidth'}
 graph_4  <- ggplot(pm10_argentina_ranges_conteo, aes(x = rangos, y = prop_year, fill = rangos, label = rangos)) +
                   geom_col(show.legend = FALSE) +
-                  geom_text(vjust=0.5, size = 5)+
+                  geom_text(vjust=-0.5, size = 7, face = "bold", color = "grey")+
                   scale_color_manual(values = c("<=20 µg/m³" = "green", "(20-40] µg/m³" = "orange", ">40 µg/m³" = "red"),
                                      aesthetics = c("colour", "fill")) +
-                  ggtitle("Evolución niveles PM10 - Estación Argentina (Gijón)") +
-                  ylab("Porcentaje rangos de niveles de PM10") +
-                  xlab("Rangos de niveles de PM10") +
+                  ggtitle("Evolución PM10 - Estación Argentina (Gijón)") +
+                  ylab("% rangos PM10 - Promedios horarios") +
+                  xlab("Rangos de niveles de PM10-Promedios horarios") +
                   theme(axis.text=element_text(size=12),
-                  axis.title=element_text(size=12,face="bold"),
-                  plot.title=element_text(size = 16, face="bold"),
-                  axis.text.x=element_blank())
+                  axis.title=element_text(size=16,face="bold", color = "grey"),
+                  plot.title=element_text(size = 20, face="bold", color = "grey"),
+                  plot.subtitle = element_text(size = 40, face="bold", color = "grey"),
+                  axis.text.x=element_blank(),
+                  axis.ticks.x = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  panel.background = element_blank()) +
+                  scale_y_continuous(labels = scales::percent)
 
 graph_4
 ```
 
+Los porcentajes en el eje Y sale mal, pero por lo que sea al animarlo aparece correctamente. Así que lo dejamos así.
+
+
 ```{r , warning= FALSE, message= FALSE, out.width= '\\textwidth'}
 pm10_Argentina_2000_2018_anim <- graph_4 + transition_time(as.integer(year)) +
-  labs(title = "Año: {frame_time}")
+  labs(title = "Evolución PM10 estación Argentina (Gijón)",
+        subtitle = "Año: {frame_time}")
 
 pm10_Argentina_2000_2018_anim
 
 anim_save("pm10_Argentina_2000_2018.gif", pm10_Argentina_2000_2018_anim)
 ```
+
